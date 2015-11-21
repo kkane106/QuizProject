@@ -9,11 +9,20 @@
 </head>
 <body>
 	<h1>Quizzes</h1>
-	<ul>
+	<table>
 		<c:forEach var="quiz" items="${quizzes}">
-			<li><a href="showQuiz.do?id=${quiz.getId()}">${quiz.getName()}</a></li>
+			<tr>
+				<td><a href="showQuiz.do?id=${quiz.getId()}">${quiz.getName()}</a></td>
+				<td><a href="editQuiz.do?id=${quiz.getId()}"><button>Edit</button></a></td>
+				<td>
+					<form action="deleteQuiz.do" method="POST">
+						<input type="hidden" name="id" value="${quiz.getId()}" /> <input
+							type="submit" value="Delete" />
+					</form>
+				</td>
+			</tr>
 		</c:forEach>
-	</ul>
+	</table>
 	<a href="newQuiz.do"><button>Create a Quiz</button></a>
 </body>
 </html>

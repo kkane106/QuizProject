@@ -57,4 +57,8 @@ public class QuizDao {
 		question.setAnswers(answersList);
 		return question;
 	}
+	
+	public void deleteQuiz(int id) {
+		em.remove(em.find(Quiz.class, id));
+	}
 }
