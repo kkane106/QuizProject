@@ -30,7 +30,6 @@ public class QuizController {
 	public Quiz quiz() {
 		return new Quiz();
 	}
-	
 //	Index
 	@RequestMapping(value="/quizzes.do", method=RequestMethod.GET)
 	public ModelAndView getQuizzes() {
@@ -44,7 +43,8 @@ public class QuizController {
 	}
 //	New
 	@RequestMapping(value="/newQuiz.do", method=RequestMethod.GET)
-	public ModelAndView newQueiz() {
+	public ModelAndView newQueiz(@ModelAttribute("quiz") Quiz quiz, Model model) {
+		model.addAttribute("quiz", new Quiz());
 		return new ModelAndView("newQuiz");
 	}
 //	Create
