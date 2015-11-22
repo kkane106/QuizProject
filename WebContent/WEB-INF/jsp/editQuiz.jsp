@@ -15,7 +15,7 @@
 				<td><b>Quiz Name</b></td>
 			</tr>
 			<tr>
-				<td><input type="text" size="70" name="quizName"
+				<td><input type="text" size="50" name="quizName"
 					value="${quiz.getName()}" /></td>
 			</tr>
 
@@ -23,23 +23,34 @@
 				varStatus="loop">
 				<tr>
 					<td><b>Question &#35;${loop.index + 1}</b></td>
+					<td class="edit"><a
+						href="editQuestion.do?id=${question.getId()}&quizId=${quiz.getId()}">Edit</a></td>
 				</tr>
 				<tr>
-					<td><input type="text" size="70" name="questions"
-						value="${question.getText()}" /></td>
+					<td class="question">${question.getText()}</td>
+					<td>Correct?</td>
 				</tr>
 				<c:forEach var="answer" items="${question.getAnswers()}">
 					<tr>
-						<td><input type="text" size="70" name="answers"
-							value="${answer.getText()}" /></td>
-						<td><input type="radio" name="${answer.getId()}"
-							value="${answer.getId()}" /></td>
+						<td class="answer">${answer.getText()}</td>
+						<c:choose>
+							<c:when test="${answer.isCorrect()}">
+								<td class="correct">Y</td>
+							</c:when>
+							<c:otherwise>
+								<td class="correct">N</td>
+							</c:otherwise>
+						</c:choose>
 					</tr>
 
 				</c:forEach>
 			</c:forEach>
 		</table>
-		<input type="submit" value="Update" />
+		<input type="submit" value="Update Quiz" />
+	</form>
+	<form action="newQuestion.do" method="GET">
+		<input type="hidden" name="quizId" value="${quiz.getId()}" />
+		<input type="submit" value="Add New Question" />
 	</form>
 </body>
 </html>

@@ -50,7 +50,7 @@ public class QuizController {
 		return new ModelAndView("newQuiz");
 	}
 
-	// Create
+	// Create --> Refactor this!
 	@RequestMapping(value = "/createQuiz.do", method = RequestMethod.POST)
 	public ModelAndView createQuiz(@RequestParam(name = "quizName", required = false) String quizName,
 			@RequestParam("question") String questionName, @RequestParam("answer") List<String> answers,
@@ -84,63 +84,22 @@ public class QuizController {
 	public ModelAndView editQuiz(@RequestParam("id") int id) {
 		return new ModelAndView("editQuiz", "quiz", quizDao.getQuiz(id));
 	}
+	
 	// Update
-	@RequestMapping(value="updateQuiz.do", method=RequestMethod.POST)
-	public ModelAndView updateQuiz(@RequestParam Map<String,String> requestParams, 
-			@RequestParam("questions") List<String> newQuestions,
-			@RequestParam("answers") List<String> newAnswers) {
-		Quiz quiz = quizDao.getQuiz(Integer.parseInt(requestParams.get("quizId")));
-		quiz.setName(requestParams.get("quizName"));
-		List<Question> questions = updateQuestions(quiz.getQuestions(), newQuestions);
-		List<String> correctAnswerIds = new ArrayList<String>(requestParams.keySet()).subList(4, requestParams.keySet().size());
-		// Currently only configured for questions to have exaclty 4 answers
-		for (int i=0 ; i < questions.size() ; i++) {
-			List<String> questionAnswers = new ArrayList();
-			for (int j=0; j < 4; j++) {
-				questionAnswers.add(newAnswers.get(j));
-			}
-			questions.get(i).setAnswers(updateAnswers(questions.get(i), questionAnswers));
-			newAnswers = newAnswers.subList(4, newAnswers.size());
-			System.out.println(questions.get(i).getAnswers());
-		}
-		
-		
+	@RequestMapping(value="/updateQuiz.do", method=RequestMethod.POST)
+	public ModelAndView updateQuiz(@RequestParam("quizName") String quizName,
+			@RequestParam("quizId") int id) {
+		Quiz quiz = quizDao.updateQuiz(id, quizName);
 		return new ModelAndView("quiz", "quiz", quiz);
 	}
-
-	public List<Question> updateQuestions(List<Question> questions, List<String> newQuestions) {
-		for (int i = 0; i < questions.size(); i++) {
-			if (questions.get(i).getText().equals(newQuestions.get(i))) {
-			} else if (!questions.get(i).getText().equals(newQuestions.get(i))) {
-				questions.get(i).setText(newQuestions.get(i));
-			} else {
-				// TODO!:: DEAL WITH ADDITIONAL QUESTIONS THAT ARE CREATED! /
-				// DELETED
-			}
-		}
-		return questions;
-	}
-
-	public List<Answer> updateAnswers(Question question, List<String> newAnswers) {
-		List<Answer> answers = question.getAnswers();
-		for (int i = 0; i < answers.size(); i++) {
-			if (answers.get(i).getText().equals(newAnswers.get(i))) {
-
-			} else if (!answers.get(i).getText().equals(newAnswers.get(i))) {
-				answers.get(i).setText(newAnswers.get(i));
-			} else {
-				// TODO!:: DEAL WITH ADDITIONAL ANSWERS THAT ARE CREATED /
-				// DELETED
-			}
-		}
-		return answers;
-	}
+	
 	// Delete
-	@RequestMapping(value="deleteQuiz.do", method=RequestMethod.POST)
+	@RequestMapping(value="/deleteQuiz.do", method=RequestMethod.POST)
 	public ModelAndView deleteQuiz(@RequestParam("id") int id) {
 		quizDao.deleteQuiz(id);
 		return new ModelAndView("quizzes", "quizzes", quizDao.getQuizzes());
 	}
+	
 	// Score
 	@RequestMapping(value="/evaluateQuiz.do", method=RequestMethod.POST)
 	public ModelAndView evaluateQuiz(@RequestParam Map<String, String> requestParams) {
